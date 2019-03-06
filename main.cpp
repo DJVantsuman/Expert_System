@@ -1,4 +1,3 @@
-#include <iostream>
 #include "expert_system.h"
 
 void printMan()
@@ -10,15 +9,23 @@ void printMan()
 int main(int ac, char *av[])
 {
     std::vector<std::string> inputData;
+    Expert &exp = Expert::instance();
 
     if (ac != 2)
         printMan();
 
-    inputData = Reader::instance().readFile(av[1]);
+    try {
+        inputData = Reader::instance().readFile(av[1]);
+        Lexer::instance().checkInput(inputData);
+        Parser::instance().parseInput(inputData, exp);
+    } catch (std::string msg) {
+        std::cout << "ERROR: " + msg << std::endl;
+        exit(1);
+    }
 
-    for (std::vector<std::string>::iterator it = inputData.begin();
-         it !=inputData.end();
-         ++it)
-        std::cout << *it;
+//    for (std::vector<std::string>::iterator it = inputData.begin();
+//         it !=inputData.end();
+//         ++it)
+//        std::cout << *it << std::endl;;
     return 0;
 }

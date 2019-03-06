@@ -5,8 +5,15 @@
 #include <string>
 #include <iostream>
 #include <exception>
+#include <regex>
+#include <algorithm>
+#include <cctype>
 
+#include "expert.h"
 #include "reader.h"
+#include "lexer.h"
+#include "parser.h"
+
 
 
 

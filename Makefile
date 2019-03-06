@@ -1,6 +1,6 @@
 NAME =	exp_sys
 FLAGS = -Wall -Werror -Wextra -std=c++11
-SRC = main.cpp reader.cpp
+SRC = main.cpp reader.cpp lexer.cpp parser.cpp expert.cpp
 CC = g++
 OSRC =	$(SRC:.cpp=.o)
 
