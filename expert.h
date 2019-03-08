@@ -10,7 +10,11 @@ public:
     ~Expert();
 private:
     Expert();
-    std::vector<std::string> getListOfRules(std::string name);
+    void    getListOfRules(char name);
+    bool    checkRule(std::string rule, char name);
+    bool    checkListRules(Rule rule);
+
+    std::vector<Rule> listRules;
 
 public:
     static Expert &instance();

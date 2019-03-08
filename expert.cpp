@@ -15,33 +15,64 @@ Expert &Expert::instance() {
 
 bool    Expert::getAnswer(char name)
 {
-    std::string var;
-    std::vector<std::string> listRules;
+    this->listRules.clear();
+    getListOfRules(name);
 
-    var += name;
-    listRules = getListOfRules(var);
-//    std::cout << "listRules.size() = " << listRules.size() << std::endl;
-    for(size_t i = 0; i < listRules.size(); i++) {
-        std::cout << "Queries " << name << "; Rules " <<  listRules[i] <<  std::endl;
+    std::cout << "Queries " << name << std::endl;
+    for(size_t i = 0; i < this->listRules.size(); i++) {
+        std::cout << this->listRules[i].left << this->listRules[i].symbol
+                     << this->listRules[i].right <<  std::endl;
     }
     return false;
 }
 
-std::vector<std::string> Expert::getListOfRules(std::string name)
+void Expert::getListOfRules(char name)
 {
-    std::vector<std::string> listRules;
+    std::map<std::string, std::string> listRules;
 
-//    std::cout << "Name = " << name << std::endl;
     for (size_t i = 0; i < this->rules.size(); i++)
     {
-//        std::cout << "name = " << name << std::endl;
-//        std::cout << "this->rules[i].left = " << this->rules[i].left << std::endl;
-//        std::cout << "this->rules[i].right = " << this->rules[i].right << std::endl;
-
-        if(this->rules[i].left == name)
-            listRules.push_back(this->rules[i].right);
-        else if(this->rules[i].right == name)
-            listRules.push_back(this->rules[i].left);
+        for (size_t j = 0; j < this->rules[i].right.size(); j++)
+        {
+            if(this->rules[i].right[j] == name) {
+                if(checkRule(this->rules[i].right, name) && checkListRules(this->rules[i]))
+                    this->listRules.push_back(this->rules[i]);
+                break ;
+            }
+        }
     }
-    return  listRules;
+
+    for (size_t i = 0; i < this->rules.size(); i++)
+    {
+        for (size_t k = 0; k < this->rules[i].left.size(); k++)
+        {
+            if(this->rules[i].left[k] == name) {
+                if(checkRule(this->rules[i].right, name)  && checkListRules(this->rules[i]))
+                    this->listRules.push_back(this->rules[i]);
+                break ;
+            }
+        }
+    }
+}
+
+bool Expert::checkRule(std::string rule, char name)
+{
+    for (size_t i = 0; i < rule.size(); i++)
+    {
+        if(!(rule[i] >= 65 && rule[i] <= 90) && rule[i] != '+' &&
+            rule[i] != '(' && rule[i] != ')' &&
+                !(rule.size() == 2 && rule[0] == '!' && rule[1] == name))
+            return false;
+    }
+    return true;
+}
+
+bool Expert::checkListRules(Rule rule)
+{
+    for (size_t i = 0; i < this->listRules.size(); i++)
+    {
+        if(this->listRules[i].right == rule.right && this->listRules[i].left == rule.left)
+            return false;
+    }
+    return true;
 }
