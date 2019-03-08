@@ -10,10 +10,14 @@ public:
     ~Expert();
 private:
     Expert();
+    std::vector<std::string> getListOfRules(std::string name);
+
 public:
     static Expert &instance();
 
-    std::map<std::string, std::string> rules;
-    std::map<std::string, bool> facts;
-    std::vector<std::string> queries;
+    std::vector<Rule> rules;
+    std::vector<Fact> facts;
+    std::vector<char> queries;
+
+    bool getAnswer(char name);
 };

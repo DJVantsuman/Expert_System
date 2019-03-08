@@ -13,6 +13,8 @@ private:
     Parser();
     void    parseString(std::string str, Expert &exp);
     void    parseFacts(std::string str, Expert &exp);
+    void    checkFact(Expert &exp, char varFact);
+    void    parseAllFacts(Expert &exp);
     void    parseQueries(std::string str, Expert &exp);
 public:
     static Parser &instance();
