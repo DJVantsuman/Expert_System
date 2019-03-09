@@ -8,12 +8,11 @@ void printMan()
 
 void    findAnswer(Expert &exp)
 {
-    bool answer;
+    int answer;
 
-    std::cout << "findAnswer" << std::endl;
     for (size_t i = 0; i < exp.queries.size(); i++)
     {
-        answer = exp.getAnswer(exp.queries[i]);
+        answer = exp.getAnswer(exp.queries[i], '@');
     }
 }
 
