@@ -12,12 +12,14 @@ public:
 
 private:
     Expert();
-    bool    checkRule(Rule rule, std::vector<Rule> &listRules);
-    bool    checkListRuls(Rule rule, char search);
+
+    bool                checkRule(Rule rule, std::vector<Rule> &listRules);
+    bool                checkListRules(Rule rule, char search);
     std::vector<Rule>   createListOfRuleToSolve(char name, char search);
     std::string         createExpression(Rule rule, char name);
-    int     calculate(std::string expression);
-    int     getFact(char name);
+    int                 calculate(std::string expression);
+    int                 getPriorty(char s, char e);
+    int                 getFact(char name);
 
 
 
@@ -29,5 +31,5 @@ public:
     std::vector<char> queries;
 
 
-    int getAnswer(char name, char search);
+    char getAnswer(char name, char search);
 };

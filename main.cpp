@@ -13,6 +13,13 @@ void    findAnswer(Expert &exp)
     for (size_t i = 0; i < exp.queries.size(); i++)
     {
         answer = exp.getAnswer(exp.queries[i], '@');
+
+        if(answer == '0')
+            std::cout << "\"" <<exp.queries[i] << "\" is FALSE." << std::endl;
+        else if(answer == '1')
+            std::cout << "\"" <<exp.queries[i] << "\" is TRUE." << std::endl;
+        else if(answer == '2')
+            std::cout << "It is not possible to find a solution for \"" << exp.queries[i] << "\"." << std::endl;
     }
 }
 
