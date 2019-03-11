@@ -13,12 +13,21 @@ Expert &Expert::instance() {
     return expert;
 }
 
+int     Expert::findInRule(std::string rule, char name)
+{
+    for (size_t i = 0; i < rule.size(); i++)
+    {
+        if(rule[i] == name)
+            return i;
+    }
+    return -1;
+}
+
 char    Expert::getAnswer(char name, char search)
 {
-    int answer;
+    char answer = '2';
     std::vector<Rule> listOfRuleToSolve;
 
-    answer = 2;
     listOfRuleToSolve = createListOfRuleToSolve(name, search);
 
 
@@ -34,47 +43,57 @@ char    Expert::getAnswer(char name, char search)
 
     for(size_t i = 0; i < listOfRuleToSolve.size(); i++)
     {
-        try {
-            if(listOfRuleToSolve[i].right.size() == 1 && listOfRuleToSolve[i].right[0] == name) {
-                answer = calculate(createExpression(listOfRuleToSolve[i], name));
-            }
-            else if(listOfRuleToSolve[i].right.size() == 2 && listOfRuleToSolve[i].right[0] == '!' &&
-                listOfRuleToSolve[i].right[1] == name) {
-                answer = calculate(createExpression(listOfRuleToSolve[i], name));
-                if(answer == 0)
-                    answer = 1;
-                else if(answer == 1)
-                    answer = 0;
-            }
+        int f = 0;
+        std::string expresion;
 
-            if(answer == '2')
-                continue;
+        if(int j = findInRule(listOfRuleToSolve[i].right, name) >= 0)
+        {
+            expresion = createExpression(listOfRuleToSolve[i].left, name);
+            if(expresion != "error")
+                answer = calculate(expresion);
             else
-                return answer;
+                continue;
+            if(listOfRuleToSolve[i].right[j - 1] == '!')
+                f = 1;
         }
-        catch (...) {
-            std::cout << name << " is NONE" << std::endl;
+        else if(int j = findInRule(listOfRuleToSolve[i].left, name) >= 0)
+        {
+            expresion = createExpression(listOfRuleToSolve[i].right, name);
+            if(expresion != "error")
+                answer = calculate(expresion);
+            else
+                continue;
+            if(listOfRuleToSolve[i].left[j - 1] == '!')
+                f = 1;
+        }
+
+        if(answer == '0' && f)
+            answer = '1';
+        else if(answer == '1' && f)
+            answer = '0';
+        else if(answer == '2')
             continue;
-        }
+        else
+            return answer;
     }
     return answer;
 }
 
-int     Expert::getFact(char name)
+char     Expert::getFact(char name)
 {
     for(size_t i = 0; i < this->facts.size(); i++)
     {
         if(this->facts[i].name == name)
             return this->facts[i].value;
     }
-    return 2;
+    return '2';
 }
 
 /*
  * 0 - low priority
  * 1 - high priority
  */
-int     Expert::getPriorty(char top, char e)
+int     Expert::getPriority(char top, char e)
 {
     char symbols[5] = {'^', '|', '+', '!', '('};
     int n1, n2;
@@ -88,7 +107,7 @@ int     Expert::getPriorty(char top, char e)
     return n1 > n2 ? 0 : 1;
 }
 
-int    Expert::calculate(std::string expression)
+char    Expert::calculate(std::string expression)
 {
     std::vector<char> output;
     std::stack<char> operations;
@@ -104,10 +123,10 @@ int    Expert::calculate(std::string expression)
             }
             operations.pop();
         }
-        else if((operations.size() > 0 && getPriorty(operations.top(), expression[i])) || operations.size() == 0 ||
-                (!getPriorty(operations.top(), expression[i]) && operations.top() == '('))
+        else if((operations.size() > 0 && getPriority(operations.top(), expression[i])) || operations.size() == 0 ||
+                (!getPriority(operations.top(), expression[i]) && operations.top() == '('))
             operations.push(expression[i]);
-        else if(!getPriorty(operations.top(), expression[i]) && operations.top() == '!') {
+        else if(!getPriority(operations.top(), expression[i]) && operations.top() == '!') {
             if(output[output.size() - 1] == '1')
                 output[output.size() - 1] = 0;
             else if(output[output.size() - 1] == '0')
@@ -167,28 +186,28 @@ int    Expert::calculate(std::string expression)
     return result[0];
 }
 
-std::string    Expert::createExpression(Rule rule, char name)
+std::string    Expert::createExpression(std::string rule, char name)
 {
-    std::cout << "createExpression from  " << rule.left << std::endl;
+    std::cout << "createExpression from  " << rule << std::endl;
     std::string expression;
     std::string result;
 
     expression = "";
     result = "";
-    for(size_t i = 0; i < rule.left.size(); i++)
+    for(size_t i = 0; i < rule.size(); i++)
     {
-        int f;
-        if(rule.left[i] >= 65 && rule.left[i] <= 90)
+        char f;
+        if(rule[i] >= 65 && rule[i] <= 90)
         {
-            f = getFact(rule.left[i]);
-            if(f == 2)
-                f = getAnswer(rule.left[i], name);
-            if(f == 2)
-                throw "None";
-            expression += std::to_string(f);
+            f = getFact(rule[i]);
+            if(f == '2')
+                f = getAnswer(rule[i], name);
+            if(f == '2')
+                return "error";
+            expression += f;
         }
         else {
-            expression += rule.left[i];
+            expression += rule[i];
         }
     }
     for(size_t i = 0; i < expression.size(); i++)

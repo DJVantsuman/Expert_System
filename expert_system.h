@@ -28,7 +28,7 @@ struct Fact
      * 1 - true
      * 2 - none
      */
-    int value;
+    char value;
 };
 
 #include "expert.h"

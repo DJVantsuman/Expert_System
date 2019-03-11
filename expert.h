@@ -15,11 +15,12 @@ private:
 
     bool                checkRule(Rule rule, std::vector<Rule> &listRules);
     bool                checkListRules(Rule rule, char search);
+    int                 findInRule(std::string rule, char name);
     std::vector<Rule>   createListOfRuleToSolve(char name, char search);
-    std::string         createExpression(Rule rule, char name);
-    int                 calculate(std::string expression);
-    int                 getPriorty(char s, char e);
-    int                 getFact(char name);
+    std::string         createExpression(std::string rule, char name);
+    char                calculate(std::string expression);
+    int                 getPriority(char s, char e);
+    char                getFact(char name);
 
 
 

@@ -46,7 +46,7 @@ void Parser::parseFacts(std::string str, Expert &exp)
         for (size_t i = 0; i < ch.size(); i++) {
             Fact fact;
             fact.name = ch.at(i);
-            fact.value = 1;
+            fact.value = '1';
             exp.facts.push_back(fact);
         }
     }
@@ -67,7 +67,7 @@ void Parser::checkFact(Expert &exp, char varFact)
         Fact fact;
 
         fact.name = varFact;
-        fact.value = 2;
+        fact.value = '2';
         exp.facts.push_back(fact);
     }
 }
