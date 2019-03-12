@@ -114,7 +114,7 @@ char    Expert::calculate(std::string expression)
     std::vector<char> result;
 
     for(size_t i = 0; i < expression.size(); i++) {
-        if(expression[i] == '1' || expression[i] == '0')
+        if(expression[i] == '1' || expression[i] == '0' || expression[i] == '2')
             output.push_back(expression[i]);
         else if(expression[i] == ')') {
             while(operations.top() != '(') {
@@ -128,9 +128,11 @@ char    Expert::calculate(std::string expression)
             operations.push(expression[i]);
         else if(!getPriority(operations.top(), expression[i]) && operations.top() == '!') {
             if(output[output.size() - 1] == '1')
-                output[output.size() - 1] = 0;
+                output[output.size() - 1] = '0';
             else if(output[output.size() - 1] == '0')
-                output[output.size() - 1] = 1;
+                output[output.size() - 1] = '1';
+            else if(output[output.size() - 1] == '2')
+                output[output.size() - 1] = '2';
             operations.pop();
             operations.push(expression[i]);
         }
@@ -142,12 +144,14 @@ char    Expert::calculate(std::string expression)
     for(size_t i = 0; i < output.size(); i++)
     {
         char r;
-        if(output[i] == '1' || output[i] == '0')
+        if(output[i] == '1' || output[i] == '0' || output[i] == '2')
             result.push_back(output[i]);
         else if(output[i] == '+')
         {
-            if(result[result.size() - 1] == 1 && result[result.size() - 2] == 1)
+            if(result[result.size() - 1] == '1' && result[result.size() - 2] == '1')
                 r = '1';
+            else if(result[result.size() - 1] == '2' || result[result.size() - 2] == '2')
+                r = '2';
             else
                 r = '0';
             result.pop_back();
@@ -158,6 +162,9 @@ char    Expert::calculate(std::string expression)
         {
             if(result[result.size() - 1] == '1' || result[result.size() - 2] == '1')
                 r = '1';
+            else if ((result[result.size() - 1] == '2' && result[result.size() - 2] == '0') ||
+                    (result[result.size() - 1] == '0' && result[result.size() - 2] == '2'))
+                r = '2';
             else
                 r = '0';
             result.pop_back();
@@ -166,9 +173,11 @@ char    Expert::calculate(std::string expression)
         }
         else if(output[i] == '^')
         {
-            if((result[result.size() - 1] == 1 && result[result.size() - 2] == 0) ||
-                    (result[result.size() - 1] == 0 && result[result.size() - 2] == 1))
+            if((result[result.size() - 1] == '1' && result[result.size() - 2] == '0') ||
+                    (result[result.size() - 1] == '0' && result[result.size() - 2] == '1'))
                 r = '1';
+            else if(result[result.size() - 1] == '2' || result[result.size() - 2] == '2')
+                r = '2';
             else
                 r = '0';
             result.pop_back();
@@ -179,7 +188,7 @@ char    Expert::calculate(std::string expression)
         {
             if(result[result.size() - 1] == '1')
                 result[result.size() - 1] = '0';
-            else
+            else if(result[result.size() - 1] == '0')
                 result[result.size() - 1] = '1';
         }
     }
@@ -202,8 +211,6 @@ std::string    Expert::createExpression(std::string rule, char name)
             f = getFact(rule[i]);
             if(f == '2')
                 f = getAnswer(rule[i], name);
-            if(f == '2')
-                return "error";
             expression += f;
         }
         else {
@@ -217,8 +224,10 @@ std::string    Expert::createExpression(std::string rule, char name)
         else {
             if(expression[i + 1] == '1')
                 result += '0';
-            else
+            else if(expression[i + 1] == '0')
                 result += '1';
+            else
+                result += '2';
             i++;
         }
     }

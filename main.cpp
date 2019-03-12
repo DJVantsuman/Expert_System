@@ -8,7 +8,7 @@ void printMan()
 
 void    findAnswer(Expert &exp)
 {
-    int answer;
+    char answer;
 
     for (size_t i = 0; i < exp.queries.size(); i++)
     {
