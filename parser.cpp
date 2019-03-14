@@ -67,7 +67,7 @@ void Parser::checkFact(Expert &exp, char varFact)
         Fact fact;
 
         fact.name = varFact;
-        fact.value = '2';
+        fact.value = '0';
         exp.facts.push_back(fact);
     }
 }

@@ -35,7 +35,15 @@ int     main(int ac, char *av[])
         inputData = Reader::instance().readFile(av[1]);
         Lexer::instance().checkInput(inputData);
         Parser::instance().parseInput(inputData, exp);
-        findAnswer(exp);
+
+        if(exp.rules.size() == 0)
+            std::cout << "ERROR: The file \"" << av[1] <<"\" does not contain any rules." << std::endl;
+        else if(exp.facts.size() == 0)
+            std::cout << "ERROR: The file \"" << av[1] <<"\" does not contain any facts." << std::endl;
+        else if(exp.queries.size() == 0)
+            std::cout << "ERROR: The file \"" << av[1] <<"\" does not contain any queries." << std::endl;
+        else
+            findAnswer(exp);
 
 //        for(size_t i = 0; i < exp.rules.size(); i++) {
 //            std::cout << "Rule left #" + std::to_string(i)  + " " << exp.rules[i].left << std::endl;

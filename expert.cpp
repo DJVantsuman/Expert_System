@@ -25,7 +25,7 @@ int     Expert::findInRule(std::string rule, char name)
 
 char    Expert::getAnswer(char name, char search)
 {
-    char answer = '2';
+    char answer = '0';
     std::vector<Rule> listOfRuleToSolve;
 
     listOfRuleToSolve = createListOfRuleToSolve(name, search);
@@ -49,20 +49,14 @@ char    Expert::getAnswer(char name, char search)
         if(int j = findInRule(listOfRuleToSolve[i].right, name) >= 0)
         {
             expresion = createExpression(listOfRuleToSolve[i].left, name);
-            if(expresion != "error")
-                answer = calculate(expresion);
-            else
-                continue;
+            answer = calculate(expresion);
             if(listOfRuleToSolve[i].right[j - 1] == '!')
                 f = 1;
         }
         else if(int j = findInRule(listOfRuleToSolve[i].left, name) >= 0)
         {
             expresion = createExpression(listOfRuleToSolve[i].right, name);
-            if(expresion != "error")
-                answer = calculate(expresion);
-            else
-                continue;
+            answer = calculate(expresion);
             if(listOfRuleToSolve[i].left[j - 1] == '!')
                 f = 1;
         }
@@ -73,10 +67,24 @@ char    Expert::getAnswer(char name, char search)
             answer = '0';
         else if(answer == '2')
             continue;
-        else
+        else {
+            setFact(name, answer);
             return answer;
+        }
     }
+    setFact(name, answer);
     return answer;
+}
+
+void    Expert::setFact(char fact, char value)
+{
+    for(size_t i = 0; i < this->facts.size(); i++)
+    {
+        if(this->facts[i].name == fact) {
+            this->facts[i].value = value;
+            break;
+        }
+    }
 }
 
 char     Expert::getFact(char name)
@@ -86,7 +94,7 @@ char     Expert::getFact(char name)
         if(this->facts[i].name == name)
             return this->facts[i].value;
     }
-    return '2';
+    return '0';
 }
 
 /*
@@ -209,7 +217,7 @@ std::string    Expert::createExpression(std::string rule, char name)
         if(rule[i] >= 65 && rule[i] <= 90)
         {
             f = getFact(rule[i]);
-            if(f == '2')
+            if(f == '2' || f == '0')
                 f = getAnswer(rule[i], name);
             expression += f;
         }

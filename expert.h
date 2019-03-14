@@ -21,6 +21,7 @@ private:
     char                calculate(std::string expression);
     int                 getPriority(char s, char e);
     char                getFact(char name);
+    void                setFact(char fact, char value);
 
 
 
