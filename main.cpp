@@ -12,7 +12,9 @@ void    findAnswer(Expert &exp)
 
     for (size_t i = 0; i < exp.queries.size(); i++)
     {
-        answer = exp.getAnswer(exp.queries[i], '@');
+        answer = exp.getFact(exp.queries[i]);
+        if(answer == '0')
+            answer = exp.getAnswer(exp.queries[i], '@');
 
         if(answer == '0')
             std::cout << "\"" <<exp.queries[i] << "\" is FALSE." << std::endl;

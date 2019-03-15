@@ -43,10 +43,11 @@ char    Expert::getAnswer(char name, char search)
 
     for(size_t i = 0; i < listOfRuleToSolve.size(); i++)
     {
-        int f = 0;
+        int f = 0, j;
         std::string expresion;
 
-        if(int j = findInRule(listOfRuleToSolve[i].right, name) >= 0)
+        j = findInRule(listOfRuleToSolve[i].right, name);
+        if(j >= 0)
         {
             expresion = createExpression(listOfRuleToSolve[i].left, name);
             answer = calculate(expresion);
@@ -65,7 +66,7 @@ char    Expert::getAnswer(char name, char search)
             answer = '1';
         else if(answer == '1' && f)
             answer = '0';
-        else if(answer == '2')
+        else if(answer == '2' || answer == '0')
             continue;
         else {
             setFact(name, answer);

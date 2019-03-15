@@ -20,7 +20,6 @@ private:
     std::string         createExpression(std::string rule, char name);
     char                calculate(std::string expression);
     int                 getPriority(char s, char e);
-    char                getFact(char name);
     void                setFact(char fact, char value);
 
 
@@ -33,5 +32,6 @@ public:
     std::vector<char> queries;
 
 
-    char getAnswer(char name, char search);
+    char                getAnswer(char name, char search);
+    char                getFact(char name);
 };

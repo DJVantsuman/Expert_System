@@ -30,6 +30,13 @@ void Parser::parseString(std::string str, Expert &exp)
         rule.symbol = result[2];
         exp.rules.push_back(rule);
     }
+    for (size_t i = 0; i < str.size() - 1; i++) {
+        if((str[i] == '+' && (str[i + 1] == '+' || str[i + 1] == '|' || str[i + 1] == '^' || str[i + 1] == ')')) ||
+                (str[i] == '|' && (str[i + 1] == '|' || str[i + 1] == '+' || str[i + 1] == '^' || str[i + 1] == ')')) ||
+                (str[i] == '^' && (str[i + 1] == '^' || str[i + 1] == '|' || str[i + 1] == '+' || str[i + 1] == ')')) ||
+                (str[i] == '(' && (str[i + 1] == ')' || str[i + 1] == '|' || str[i + 1] == '^')))
+            throw "Mistake in string \"" + str + "\"";
+    }
 }
 
 void Parser::parseFacts(std::string str, Expert &exp)
@@ -109,17 +116,33 @@ void Parser::parseQueries(std::string str, Expert &exp)
 
 void Parser::parseInput(std::vector<std::string> input, Expert &exp)
 {
+    int f, q;
+
+    f = 0;
+    q = 0;
     for (size_t i = 0; i < input.size(); i++)
     {
         input[i].erase(std::remove_if(input[i].begin(), input[i].end(), isspace), input[i].end());
         if (input[i][0] == '#' || input[i].empty())
             continue;
-        else if (input[i][0] == '=')
+        else if (input[i][0] == '='){
+            f++;
             parseFacts(input[i], exp);
-        else if (input[i][0] == '?')
+        }
+        else if (input[i][0] == '?'){
+            q++;
             parseQueries(input[i], exp);
+        }
         else
             parseString(input[i], exp);
+    }
+    if(f == 0) {
+        std::cout << "ERROR: The file does not contain any facts." << std::endl;
+        exit(1);
+    }
+    else if (q == 0){
+        std::cout << "ERROR: The file does not contain any queries." << std::endl;
+        exit(1);
     }
     parseAllFacts(exp);
 }
