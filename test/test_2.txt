@@ -1,0 +1,11 @@
+# valid test
+
+D | E => B
+B + C => A
+B => C
+D <=> A + B   # with <=> D is true; with => false
+=E
+?AD
+
+# with =   A and D are false.
+# with =E  A and D are true.

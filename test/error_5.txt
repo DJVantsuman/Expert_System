@@ -1,0 +1,8 @@
+# this is a comment
+# all the required rules and symbols, along with the bonus ones, will be
+# shown here. spacing is not important
+
+
+
+=DC
+?GVX                    # Queries : What are G, V and X ?

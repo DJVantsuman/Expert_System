@@ -28,6 +28,11 @@ void Parser::parseString(std::string str, Expert &exp)
         rule.left = result[1];
         rule.right = result[3];
         rule.symbol = result[2];
+        if(rule.left[rule.left.size() - 1] == '+' || rule.left[rule.left.size() - 1] == '|' ||
+            rule.left[rule.left.size() - 1] == '^' || rule.left[rule.left.size() - 1] == '(' ||
+                rule.right[rule.right.size() - 1] == '+' || rule.right[rule.right.size() - 1] == '|' ||
+                rule.right[rule.right.size() - 1] == '^' || rule.right[rule.right.size() - 1] == '(')
+            throw "Mistake in string \"" + str + "\"";
         exp.rules.push_back(rule);
     }
     for (size_t i = 0; i < str.size() - 1; i++) {
@@ -54,6 +59,7 @@ void Parser::parseFacts(std::string str, Expert &exp)
             Fact fact;
             fact.name = ch.at(i);
             fact.value = '1';
+            fact.isConfirm = 1;
             exp.facts.push_back(fact);
         }
     }
@@ -75,6 +81,7 @@ void Parser::checkFact(Expert &exp, char varFact)
 
         fact.name = varFact;
         fact.value = '0';
+        fact.isConfirm = 0;
         exp.facts.push_back(fact);
     }
 }

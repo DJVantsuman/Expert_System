@@ -29,6 +29,7 @@ struct Fact
      * 2 - none
      */
     char value;
+    int  isConfirm;
 };
 
 #include "expert.h"

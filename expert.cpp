@@ -30,17 +30,6 @@ char    Expert::getAnswer(char name, char search)
 
     listOfRuleToSolve = createListOfRuleToSolve(name, search);
 
-
-
-////////////// Delete ////////////////////
-    std::cout << "Queries " << name << std::endl;
-    for(size_t i = 0; i < listOfRuleToSolve.size(); i++) {
-        std::cout << listOfRuleToSolve[i].left << listOfRuleToSolve[i].symbol
-                     << listOfRuleToSolve[i].right <<  std::endl;
-    }
-//////////////////////////////////////////
-
-
     for(size_t i = 0; i < listOfRuleToSolve.size(); i++)
     {
         int f = 0, j;
@@ -49,6 +38,10 @@ char    Expert::getAnswer(char name, char search)
         j = findInRule(listOfRuleToSolve[i].right, name);
         if(j >= 0)
         {
+            std::cout << "Try to find \"" << name << "\" using this expression:" << std::endl;
+            std::cout << listOfRuleToSolve[i].left <<
+                        listOfRuleToSolve[i].symbol <<
+                        listOfRuleToSolve[i].right << std::endl;
             expresion = createExpression(listOfRuleToSolve[i].left, name);
             answer = calculate(expresion);
             if(listOfRuleToSolve[i].right[j - 1] == '!')
@@ -56,6 +49,10 @@ char    Expert::getAnswer(char name, char search)
         }
         else if(int j = findInRule(listOfRuleToSolve[i].left, name) >= 0)
         {
+            std::cout << "Try to find \"" << name << "\" using this expression:" << std::endl;
+            std::cout << listOfRuleToSolve[i].left <<
+                      listOfRuleToSolve[i].symbol <<
+                      listOfRuleToSolve[i].right << std::endl;
             expresion = createExpression(listOfRuleToSolve[i].right, name);
             answer = calculate(expresion);
             if(listOfRuleToSolve[i].left[j - 1] == '!')
@@ -69,11 +66,15 @@ char    Expert::getAnswer(char name, char search)
         else if(answer == '2' || answer == '0')
             continue;
         else {
-            setFact(name, answer);
-            return answer;
+            break;
         }
     }
     setFact(name, answer);
+
+    if(answer == '0' && search != '@')
+        std::cout << "\"" << name << "\" is FALSE." << std::endl;
+    else if(answer == '1' && search != '@')
+        std::cout << "\"" << name << "\" is TRUE." << std::endl;
     return answer;
 }
 
@@ -83,6 +84,7 @@ void    Expert::setFact(char fact, char value)
     {
         if(this->facts[i].name == fact) {
             this->facts[i].value = value;
+            this->facts[i].isConfirm = 1;
             break;
         }
     }
@@ -92,8 +94,11 @@ char     Expert::getFact(char name)
 {
     for(size_t i = 0; i < this->facts.size(); i++)
     {
-        if(this->facts[i].name == name)
+        if(this->facts[i].name == name) {
+            if(this->facts[i].value == '1')
+                std::cout << "We know that fact \"" << name << "\" is TRUE." << std::endl;
             return this->facts[i].value;
+        }
     }
     return '0';
 }
@@ -114,6 +119,22 @@ int     Expert::getPriority(char top, char e)
         if(e == symbols[i])
             n2 = i;
     return n1 > n2 ? 0 : 1;
+}
+
+bool    Expert::isConfirm(char name)
+{
+    for(size_t i = 0; i < this->facts.size(); i++)
+    {
+        if(this->facts[i].name == name && this->facts[i].isConfirm == 1) {
+            if(this->facts[i].value == '1')
+                std::cout << "We know that fact \"" << name << "\" is TRUE." << std::endl;
+            else if(this->facts[i].value == '0')
+                std::cout << "We know that fact \"" << name << "\" is FALSE." << std::endl;
+            return true;
+        } else
+            return false;
+    }
+    return false;
 }
 
 char    Expert::calculate(std::string expression)
@@ -206,7 +227,6 @@ char    Expert::calculate(std::string expression)
 
 std::string    Expert::createExpression(std::string rule, char name)
 {
-    std::cout << "createExpression from  " << rule << std::endl;
     std::string expression;
     std::string result;
 
@@ -218,7 +238,7 @@ std::string    Expert::createExpression(std::string rule, char name)
         if(rule[i] >= 65 && rule[i] <= 90)
         {
             f = getFact(rule[i]);
-            if(f == '2' || f == '0')
+            if(f == '2' || (f == '0' && !isConfirm(rule[i])))
                 f = getAnswer(rule[i], name);
             expression += f;
         }
@@ -240,9 +260,6 @@ std::string    Expert::createExpression(std::string rule, char name)
             i++;
         }
     }
-    ///////////////////////////////////////////////////////////
-    std::cout<< "Expression: " << expression << std::endl;
-    std::cout<< "Result expression: " << result << std::endl;
     return result;
 }
 

@@ -26,5 +26,8 @@ std::vector<std::string>   Reader::readFile(std::string fileName)
     else {
         throw "File with name \"" + fileName + "\" does not exist.";
     }
+
+    if(inputData.empty())
+        throw "File \"" + fileName + "\" is empty or does not exist.";
     return inputData;
 }

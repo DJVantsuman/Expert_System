@@ -21,6 +21,7 @@ private:
     char                calculate(std::string expression);
     int                 getPriority(char s, char e);
     void                setFact(char fact, char value);
+    bool                isConfirm(char name);
 
 
 
